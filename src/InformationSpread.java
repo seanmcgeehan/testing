@@ -97,7 +97,7 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int[] getNeighbors(int id) {
-        return (graph.neighbors(id));
+        return (graph.neighbors(id));// needs to be by weight
     }
 
     @Override
@@ -121,7 +121,16 @@ public class InformationSpread implements IInformationSpread {
     @Override
     public double pathPercent(int source, int destination, double threshold) {
         // TODO Auto-generated method stub
-        return 0;
+        double percent = 1;
+        int prev = source;
+        for(int x : path(source, destination, threshold)) {
+            if(x != source) {
+               percent = percent *  getWeight(prev, x);
+            }
+            prev = x;
+        }
+        
+        return percent;
     }
 
     @Override
