@@ -1,7 +1,10 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,8 +20,26 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int createFileWithRandomProbability(String filePath, String writePath) {
-        // create a file with this format:
-        // edge edge randomWeightBetween0And100
+        int linesWritten = 0;
+        try {
+            File writeFile = new File(filePath);
+            BufferedReader br = new BufferedReader(new FileReader(writeFile));
+            FileWriter writer = new FileWriter(writePath);
+            String linePointer;
+            while ((linePointer = br.readLine()) != null) {
+                int randomWeight = 1 + (int)(Math.random() * ((100 - 1) + 1));
+                System.out.println(linePointer + " " + randomWeight);
+                writer.write(linePointer + " " + randomWeight);
+                linesWritten++;
+            }
+            br.close();
+            System.out.println(linesWritten);
+            return linesWritten;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }        
         return 0;
     }
 
