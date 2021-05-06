@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,13 +17,60 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int createFileWithRandomProbability(String filePath, String writePath) {
-        // TODO Auto-generated method stub
+        // create a file with this format:
+        // edge edge randomWeightBetween0And100
         return 0;
     }
 
     @Override
     public int loadGraphFromDataSetWithRandomProbs(String filePath) {
-        // TODO Auto-generated method stub
+        //steps:
+        // 1. open file
+        // 2. retrieve data and add edge
+        // 3. return number of nodes
+                
+        File file = new File(filePath);
+        
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String firstLine = br.readLine();
+            int index = firstLine.indexOf(' ');
+            String words = firstLine.substring(0, index);
+            numberOfVertices = Integer.parseInt(words);
+            graph.init((int) (numberOfVertices + 1));
+            String linePointer;
+            
+            while ((linePointer = br.readLine()) != null) {
+                int littleIndex = linePointer.indexOf(' ');
+                int bigIndex = linePointer.lastIndexOf(' ');
+                String vWord = linePointer.substring(0, littleIndex);
+                int v = Integer.parseInt(vWord);
+                String wWord = linePointer.substring(littleIndex + 1, bigIndex);
+                int w = Integer.parseInt(wWord);
+                String weight = linePointer.substring(bigIndex + 1);
+                int wgt = Integer.parseInt(weight);
+                
+                if (v > 0 && w > 0) {
+                    graph.addEdge(v, w, wgt);
+                    graph.addEdge(w, v, wgt);
+                    if (!vertList.contains(v)) {
+                        vertList.add(v);
+                    }
+                    if (!vertList.contains(w)) {
+                        vertList.add(w);
+                    }
+                }
+
+            }
+            br.close();
+            return (int) numberOfVertices;
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         return 0;
     }
 
