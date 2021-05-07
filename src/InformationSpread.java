@@ -22,6 +22,9 @@ public class InformationSpread implements IInformationSpread {
     public int createFileWithRandomProbability(String filePath, String writePath) {
         int linesWritten = 0;
         try {
+            
+            // if the file already exists, can we keep it??
+            
             File writeFile = new File(filePath);
             BufferedReader br = new BufferedReader(new FileReader(writeFile));
             FileWriter writer = new FileWriter(writePath);
@@ -29,10 +32,11 @@ public class InformationSpread implements IInformationSpread {
             while ((linePointer = br.readLine()) != null) {
                 int randomWeight = 1 + (int)(Math.random() * ((100 - 1) + 1));
                 System.out.println(linePointer + " " + randomWeight);
-                writer.write(linePointer + " " + randomWeight);
+                writer.write(linePointer + " " + randomWeight + "\n");
                 linesWritten++;
             }
             br.close();
+            writer.close();
             System.out.println(linesWritten);
             return linesWritten;
         } catch (FileNotFoundException e) {
@@ -97,13 +101,29 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int[] getNeighbors(int id) {
-        return (graph.neighbors(id));// needs to be by weight
+        return (graph.neighbors(id));
     }
 
     @Override
     public int[] getInfectNeighbors(int id, double threshold) {
-        // TODO Auto-generated method stub
-        return null;
+        int number = 0;
+        
+        for (int node : graph.neighbors(id)) {
+            if (graph.weight(id, node) < (threshold * 100)) {
+                number++;
+            }
+        }
+        
+        int[] temp = new int[number];
+        int index = 0;
+        
+        for (int neighbor : graph.neighbors(id)) {
+            if (graph.weight(id, neighbor) < (threshold * 100)) {
+                temp[index] = neighbor;
+            }
+        }
+        //System.out.println("neighbors infected: " + temp.length);     
+        return temp;
     }
 
     @Override
@@ -111,21 +131,68 @@ public class InformationSpread implements IInformationSpread {
         return (graph.weight(id1, id2));
     }
 
-    // pred array for dijsktra
     @Override
-    public Collection<Integer> path(int source, int destination, double threshold) {
-        // TODO Auto-generated method stub
-        return null;
+    public Collection<Integer> path(int source, int destination, double threshold) {        
+        
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+        LinkedList<Integer> shortestPath = new LinkedList<>();
+        int[] dist = new int[(int) (numberOfVertices + 1)];
+        int[] pred = new int[(int) (numberOfVertices + 1)];
+        
+        for (int i = 0; i < numberOfVertices + 1; i++) {
+            dist[i] = INFINITY;
+            pred[i] = -1;
+        }
+
+        graph.setValue(source, VISITED);
+        dist[source] = 0;
+        queue.add(source);
+
+        while (!queue.isEmpty()) {
+            int s = queue.remove();
+            for (int neighborNode : getInfectNeighbors(s, threshold)) {
+                
+                if (graph.getValue(neighborNode) != VISITED) {
+                    graph.setValue(neighborNode, VISITED);
+                    
+                    dist[neighborNode] = dist[s] + graph.weight(s, neighborNode);
+                    
+                    if (dist[neighborNode] < dist[s]) {
+                        // check if this distance is greater than current one --> then change (then add to queue)
+                        pred[neighborNode] = s;
+                        queue.add(neighborNode);
+                    }
+
+                    if (neighborNode == destination) {
+                        int reverseIndexer = destination;
+                        shortestPath.add(reverseIndexer);
+                        while (pred[reverseIndexer] != -1) {
+                            shortestPath.add(pred[reverseIndexer]);
+                            reverseIndexer = pred[reverseIndexer];
+                        }
+                        
+                        // now need to reverse shortestPath
+                        LinkedList<Integer> shortestPathReversed = new LinkedList<>();
+                        for (int i : shortestPath) {
+                            shortestPathReversed.addFirst(i);  
+                        }
+                        System.out.println("path: " + shortestPathReversed);
+                        return shortestPathReversed;
+                    }
+                }
+            }            
+        }
+        System.out.println("no path exists");
+        return shortestPath;
     }
 
     @Override
     public double pathPercent(int source, int destination, double threshold) {
-        // TODO Auto-generated method stub
         double percent = 1;
         int prev = source;
         for(int x : path(source, destination, threshold)) {
             if(x != source) {
-               percent = percent *  getWeight(prev, x);
+               percent = percent * getWeight(prev, x);
             }
             prev = x;
         }
