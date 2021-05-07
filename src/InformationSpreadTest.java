@@ -20,13 +20,13 @@ public class InformationSpreadTest {
     @Test
     public void testGetInfectNeighbors() {
         is.loadGraphFromDataSetWithRandomProbs("/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
-        is.getInfectNeighbors(2, .5);
+        System.out.println(is.getInfectNeighbors(5, 1).length);
     }
     
     @Test
     public void testPath() {
         is.loadGraphFromDataSetWithRandomProbs("/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
-        is.path(1, 9, 1);
+        is.path(1, 3, 1);
     }
     
     

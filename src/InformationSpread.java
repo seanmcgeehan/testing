@@ -149,19 +149,23 @@ public class InformationSpread implements IInformationSpread {
         queue.add(source);
 
         while (!queue.isEmpty()) {
+            
             int s = queue.remove();
+            System.out.println("infected size starting at " + s + ": " + getInfectNeighbors(s, threshold).length);
+            
             for (int neighborNode : getInfectNeighbors(s, threshold)) {
                 
                 if (graph.getValue(neighborNode) != VISITED) {
+                    
                     graph.setValue(neighborNode, VISITED);
                     
                     dist[neighborNode] = dist[s] + graph.weight(s, neighborNode);
                     
-                    if (dist[neighborNode] < dist[s]) {
+//                    if (dist[neighborNode] < dist[s]) {
                         // check if this distance is greater than current one --> then change (then add to queue)
-                        pred[neighborNode] = s;
-                        queue.add(neighborNode);
-                    }
+                    pred[neighborNode] = s;
+                    queue.add(neighborNode);
+//                    }
 
                     if (neighborNode == destination) {
                         int reverseIndexer = destination;
@@ -170,7 +174,6 @@ public class InformationSpread implements IInformationSpread {
                             shortestPath.add(pred[reverseIndexer]);
                             reverseIndexer = pred[reverseIndexer];
                         }
-                        
                         // now need to reverse shortestPath
                         LinkedList<Integer> shortestPathReversed = new LinkedList<>();
                         for (int i : shortestPath) {
@@ -245,7 +248,7 @@ public class InformationSpread implements IInformationSpread {
             while (levelSize-- > 0) {
                 int temp = currentLevelQueue.poll();
                 
-                for (int neighbor : getNeighbors(temp)) {
+                for (int neighbor : getInfectNeighbors(temp, probThreshold)) {
                     if (graph.getValue(neighbor) != VISITED) {
                         currentLevelQueue.add(neighbor);
                         graph.setValue(neighbor, VISITED);
@@ -278,58 +281,27 @@ public class InformationSpread implements IInformationSpread {
         vertList = vertListSorted;
         
         // return degree of given node
-        return graph.neighbors(n).length;  
+        return getInfectNeighbors(n, threshold).length;
     }
 
-    @Override
-    public Collection<Integer> degreeNodes(int d, double threshold) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public double clustCoeff(int n, double threshold) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public Collection<Integer> clustCoeffNodes(double low, double high, double threshold) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Collection<Integer> highDegLowCCNodes(int lowBoundDegree, double upBoundCC) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public int spreadLevelsHighDegLowCC(int seed, double threshold, int lowBoundDegree, double upBoundCC) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-}
-    
-    /*
     @Override
     public Collection<Integer> degreeNodes(int d, double threshold) {
         // steps:
         // 1. for every vertex in graph, if it's degrees == d, add to collection
         ArrayList<Integer> nodesWithDDegree = new ArrayList<Integer>();
+        
         for (int i = 0; i < vertList.size(); i++) {
-            if (degree(i) == d) {
+            if (degree(i, threshold) == d) {
                 nodesWithDDegree.add(i);
             }
         }
+        
         return nodesWithDDegree;
     }
 
     @Override
     public double clustCoeff(int n, double threshold) {
-        // check if seed is valid (is in the graph) -> -1   
+     // check if seed is valid (is in the graph) -> -1   
         ArrayList<Integer> vertListSorted = new ArrayList<Integer>();
         vertListSorted = vertList;
         Collections.sort(vertList, Collections.reverseOrder());
@@ -340,13 +312,13 @@ public class InformationSpread implements IInformationSpread {
         
         vertList = vertListSorted;
         
-        if (degree(n) == 0 || degree(n) == 1) {
+        if (degree(n, threshold) == 0 || degree(n, threshold) == 1) {
             return 0;
         }
                 
         double edgeCounter = 0.0; // numerator
         
-        for (int neighbor : getNeighbors(n)) {
+        for (int neighbor : getInfectNeighbors(n, threshold)) {
             for (int subNeighbor : getNeighbors(n)) {
                 if (graph.hasEdge(neighbor, subNeighbor)) {
                     edgeCounter++;
@@ -354,21 +326,19 @@ public class InformationSpread implements IInformationSpread {
             }
         }
         
-        double potentialEdges = degree(n) * (degree(n) - 1);
+        double potentialEdges = degree(n, threshold) * (degree(n, threshold) - 1);
         
         // number of edges from node over total number of nodes
         return edgeCounter / potentialEdges;
     }
 
-    
-    
     @Override
     public Collection<Integer> clustCoeffNodes(double low, double high, double threshold) {
         Collection<Integer> clusteredNodes = new ArrayList<Integer>();      
         
         // for each vertex, check it's clustCoeff 
         for (int i = 0; i < vertList.size(); i++) {
-            int clustCoeffInt = (int) (clustCoeff(i) * 100);
+            int clustCoeffInt = (int) (clustCoeff(i, threshold) * 100);
             int lowInt = (int) (low * 100);
             int highInt = (int) (high * 100);
                         
@@ -377,25 +347,25 @@ public class InformationSpread implements IInformationSpread {
             }
         }
         return clusteredNodes;
+
     }
 
     @Override
-    public Collection<Integer> highDegLowCCNodes(int lowBoundDegree, double upBoundCC) {
-        
+    public Collection<Integer> highDegLowCCNodes(int lowBoundDegree, double upBoundCC, double threshold) {
         Collection<Integer> ccNodes = new ArrayList<Integer>();
         
         for (int i = 0; i < vertList.size(); i++) {
-            if ((clustCoeff(i) <= upBoundCC) && degree(i) >= lowBoundDegree) {
+            if ((clustCoeff(i, threshold) <= upBoundCC) && degree(i, threshold) >= lowBoundDegree) {
                 ccNodes.add(i);
             }
         }
         return ccNodes;
+
     }
 
-    
     @Override
-    public int spreadLevelsHighDegLowCC(int seed, double threshold, int lowBoundDegree, double upBoundCC) {
-     // check if seed is valid (is in the graph) -> -1   
+    public int spreadLevelsHighDegLowCC(int seed, double threshold, int lowBoundDegree, double upBoundCC, double probThreshold) {
+        // check if seed is valid (is in the graph) -> -1   
         ArrayList<Integer> vertListSorted = new ArrayList<Integer>();
         vertListSorted = vertList;
         Collections.sort(vertList, Collections.reverseOrder());
@@ -413,9 +383,9 @@ public class InformationSpread implements IInformationSpread {
         
         //return -1 if no node in the graph meets the clustering coefficient and degree requirements
         // check if no node in the graph has clust Coeff in given range -> -1
-        if (clustCoeffNodes(0, upBoundCC).size() == 0) {
+        if (clustCoeffNodes(0, upBoundCC, probThreshold).size() == 0) {
             for (int node : getNeighbors(seed)) {
-                if (degree(node) > lowBoundDegree) {
+                if (degree(node, probThreshold) > lowBoundDegree) {
                     break;
                 }
             }
@@ -423,14 +393,14 @@ public class InformationSpread implements IInformationSpread {
         }
         
         // check if we are going to remove the seed
-        if (highDegLowCCNodes(lowBoundDegree, upBoundCC).contains(seed)) {
+        if (highDegLowCCNodes(lowBoundDegree, upBoundCC, probThreshold).contains(seed)) {
             return 0;
         }    
         
         // return 0 if we cannot reach the target threshold.
         
         Collection<Integer> ccNodes = new ArrayList<Integer>();
-        ccNodes = highDegLowCCNodes(lowBoundDegree, upBoundCC);
+        ccNodes = highDegLowCCNodes(lowBoundDegree, upBoundCC, probThreshold);
         
         // remove nodes/degrees that have between range
         for (int node : ccNodes) {
@@ -439,8 +409,7 @@ public class InformationSpread implements IInformationSpread {
                 graph.removeEdge(neighbor, node);
             }
         }
-        return spreadLevels(seed, threshold);
+        return spreadLevels(seed, threshold, probThreshold);
     }
 
 }
-*/

@@ -121,7 +121,7 @@ public interface IInformationSpread {
     * @return a collection of nodes with degree >= lowBoundDegree and
     *  clustering coefficient <= upBoundCC
     */
-   Collection<Integer> highDegLowCCNodes(int lowBoundDegree, double upBoundCC);
+   Collection<Integer> highDegLowCCNodes(int lowBoundDegree, double upBoundCC, double threshold);
 
    /**
     * Given a specific node id (seed) this method will return the number of
@@ -136,6 +136,6 @@ public interface IInformationSpread {
     * @return the number of spread Levels necessary to reach threshold percent
     *         nodes in the graph
     */
-   int spreadLevelsHighDegLowCC(int seed, double threshold, int lowBoundDegree, double upBoundCC);
+   int spreadLevelsHighDegLowCC(int seed, double threshold, int lowBoundDegree, double upBoundCC, double probThreshold);
     
 }
