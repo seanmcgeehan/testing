@@ -6,12 +6,17 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
 public class InformationSpread implements IInformationSpread {
+    
+    /*
+     * TODO: pass style checker
+     */
     
     Graph graph = new GraphM();
     double numberOfVertices;
@@ -23,7 +28,15 @@ public class InformationSpread implements IInformationSpread {
         int linesWritten = 0;
         try {
             
-            // if the file already exists, can we keep it??
+            /* 
+             * 
+             * 
+             * 
+             * TODO: if the file already exists, can we keep it?? so dont update probabilities every time
+             * 
+             * 
+             * 
+             */
             
             File writeFile = new File(filePath);
             BufferedReader br = new BufferedReader(new FileReader(writeFile));
@@ -49,7 +62,7 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int loadGraphFromDataSetWithRandomProbs(String filePath) {
-        //steps:
+        // steps:
         // 1. open file
         // 2. retrieve data and add edge
         // 3. return number of nodes
@@ -132,7 +145,7 @@ public class InformationSpread implements IInformationSpread {
     }
 
     @Override
-    public Collection<Integer> path(int source, int destination, double threshold) {        
+    public Collection<Integer> path(int source, int destination, double threshold) {
         
         LinkedList<Integer> queue = new LinkedList<Integer>();
         LinkedList<Integer> shortestPath = new LinkedList<>();
@@ -158,14 +171,12 @@ public class InformationSpread implements IInformationSpread {
                 if (graph.getValue(neighborNode) != VISITED) {
                     
                     graph.setValue(neighborNode, VISITED);
-                    
-                    dist[neighborNode] = dist[s] + graph.weight(s, neighborNode);
-                    
-//                    if (dist[neighborNode] < dist[s]) {
-                        // check if this distance is greater than current one --> then change (then add to queue)
-                    pred[neighborNode] = s;
-                    queue.add(neighborNode);
-//                    }
+                                        
+                    if (dist[neighborNode] < dist[s] + graph.weight(s, neighborNode)) {
+                        dist[neighborNode] = dist[s] + graph.weight(s, neighborNode);
+                        pred[neighborNode] = s;
+                        queue.add(neighborNode);
+                    }
 
                     if (neighborNode == destination) {
                         int reverseIndexer = destination;
@@ -174,6 +185,7 @@ public class InformationSpread implements IInformationSpread {
                             shortestPath.add(pred[reverseIndexer]);
                             reverseIndexer = pred[reverseIndexer];
                         }
+                        
                         // now need to reverse shortestPath
                         LinkedList<Integer> shortestPathReversed = new LinkedList<>();
                         for (int i : shortestPath) {
@@ -193,13 +205,12 @@ public class InformationSpread implements IInformationSpread {
     public double pathPercent(int source, int destination, double threshold) {
         double percent = 1;
         int prev = source;
-        for(int x : path(source, destination, threshold)) {
+        for (int x : path(source, destination, threshold)) {
             if(x != source) {
                percent = percent * getWeight(prev, x);
             }
             prev = x;
         }
-        
         return percent;
     }
 
