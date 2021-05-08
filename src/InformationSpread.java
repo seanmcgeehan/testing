@@ -26,18 +26,7 @@ public class InformationSpread implements IInformationSpread {
     @Override
     public int createFileWithRandomProbability(String filePath, String writePath) {
         int linesWritten = 0;
-        try {
-            
-            /* 
-             * 
-             * 
-             * 
-             * TODO: if the file already exists, can we keep it?? so dont update probabilities every time
-             * 
-             * 
-             * 
-             */
-            
+        try {            
             File writeFile = new File(filePath);
             BufferedReader br = new BufferedReader(new FileReader(writeFile));
             FileWriter writer = new FileWriter(writePath);
@@ -119,10 +108,11 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int[] getInfectNeighbors(int id, double threshold) {
+        
         int number = 0;
         
         for (int node : graph.neighbors(id)) {
-            if (graph.weight(id, node) < (threshold * 100)) {
+            if (graph.weight(id, node) > (threshold * 100)) {
                 number++;
             }
         }
@@ -131,11 +121,13 @@ public class InformationSpread implements IInformationSpread {
         int index = 0;
         
         for (int neighbor : graph.neighbors(id)) {
-            if (graph.weight(id, neighbor) < (threshold * 100)) {
+            if (graph.weight(id, neighbor) > (threshold * 100)) {
                 temp[index] = neighbor;
+                index++;
             }
         }
-        //System.out.println("neighbors infected: " + temp.length);     
+        
+        System.out.println("neighbors infected: " + temp.length);     
         return temp;
     }
 
@@ -149,56 +141,64 @@ public class InformationSpread implements IInformationSpread {
         
         LinkedList<Integer> queue = new LinkedList<Integer>();
         LinkedList<Integer> shortestPath = new LinkedList<>();
-        int[] dist = new int[(int) (numberOfVertices + 1)];
+        float[] dist = new float[(int) (numberOfVertices + 1)];
         int[] pred = new int[(int) (numberOfVertices + 1)];
         
         for (int i = 0; i < numberOfVertices + 1; i++) {
-            dist[i] = INFINITY;
+            dist[i] = INFINITY;//was infinity
             pred[i] = -1;
         }
 
         graph.setValue(source, VISITED);
-        dist[source] = 0;
+        dist[source] = 1;
         queue.add(source);
 
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty()) {  
             
             int s = queue.remove();
-            System.out.println("infected size starting at " + s + ": " + getInfectNeighbors(s, threshold).length);
+            System.out.println("infected size starting at " + s + ": " + getNeighbors(s).length);
             
             for (int neighborNode : getInfectNeighbors(s, threshold)) {
+                
+                System.out.println(neighborNode + " " + s);
                 
                 if (graph.getValue(neighborNode) != VISITED) {
                     
                     graph.setValue(neighborNode, VISITED);
-                                        
-                    if (dist[neighborNode] < dist[s] + graph.weight(s, neighborNode)) {
-                        dist[neighborNode] = dist[s] + graph.weight(s, neighborNode);
+                    
+                    if(dist[neighborNode] == INFINITY) {
+                        dist[neighborNode] = (float) (dist[s]*1.0 * ( graph.weight(s, neighborNode)*1.0/100));
                         pred[neighborNode] = s;
-                        queue.add(neighborNode);
+                    }
+                    else {
+                        if(dist[neighborNode] < (dist[s]*1.0 * ( graph.weight(s, neighborNode)*1.0/100))) {
+                            dist[neighborNode] = (float) (dist[s]*1.0 * ( graph.weight(s, neighborNode)*1.0/100));  
+                            pred[neighborNode] = s;
+                        }
                     }
 
-                    if (neighborNode == destination) {
-                        int reverseIndexer = destination;
-                        shortestPath.add(reverseIndexer);
-                        while (pred[reverseIndexer] != -1) {
-                            shortestPath.add(pred[reverseIndexer]);
-                            reverseIndexer = pred[reverseIndexer];
-                        }
-                        
-                        // now need to reverse shortestPath
-                        LinkedList<Integer> shortestPathReversed = new LinkedList<>();
-                        for (int i : shortestPath) {
-                            shortestPathReversed.addFirst(i);  
-                        }
-                        System.out.println("path: " + shortestPathReversed);
-                        return shortestPathReversed;
-                    }
+                    queue.add(neighborNode);
                 }
             }            
         }
-        System.out.println("no path exists");
-        return shortestPath;
+        
+        if(dist[destination]== INFINITY) {
+            System.out.println("no path exists") ;
+            return shortestPath;
+        }
+        int reverseIndexer = destination;
+        shortestPath.add(reverseIndexer);
+        while (pred[reverseIndexer] != -1) {
+            shortestPath.add(pred[reverseIndexer]);
+            reverseIndexer = pred[reverseIndexer];
+        }
+        // now need to reverse shortestPath
+        LinkedList<Integer> shortestPathReversed = new LinkedList<>();
+        for (int i : shortestPath) {
+            shortestPathReversed.addFirst(i);  
+        }
+        System.out.println("path: " + shortestPathReversed);
+        return shortestPathReversed;
     }
 
     @Override
