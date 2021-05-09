@@ -145,7 +145,7 @@ public class InformationSpread implements IInformationSpread {
         int[] pred = new int[(int) (numberOfVertices + 1)];
         
         for (int i = 0; i < numberOfVertices + 1; i++) {
-            dist[i] = INFINITY;//was infinity
+            dist[i] = INFINITY;
             pred[i] = -1;
         }
 
@@ -167,11 +167,10 @@ public class InformationSpread implements IInformationSpread {
                     graph.setValue(neighborNode, VISITED);
                     
                     if(dist[neighborNode] == INFINITY) {
-                        dist[neighborNode] = (float) (dist[s]*1.0 * ( graph.weight(s, neighborNode)*1.0/100));
+                        dist[neighborNode] = (float) (dist[s] *1.0 * ( graph.weight(s, neighborNode)*1.0/100));
                         pred[neighborNode] = s;
-                    }
-                    else {
-                        if(dist[neighborNode] < (dist[s]*1.0 * ( graph.weight(s, neighborNode)*1.0/100))) {
+                    } else {
+                        if(dist[neighborNode] < (dist[s] * 1.0 * ( graph.weight(s, neighborNode)*1.0/100))) {
                             dist[neighborNode] = (float) (dist[s]*1.0 * ( graph.weight(s, neighborNode)*1.0/100));  
                             pred[neighborNode] = s;
                         }

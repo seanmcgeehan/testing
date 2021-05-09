@@ -18,12 +18,12 @@ public class InformationSpreadTest {
 //        System.out.println(is.getInfectNeighbors(2, .9).length);
 //    }
 //    
-    @Test
-    public void testPath() {
-        is.createFileWithRandomProbability("/Users/Jess/Desktop/HW7-Disease/babytest.txt", "/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
-        is.loadGraphFromDataSetWithRandomProbs("/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
-        is.path(1, 3, 0.1);
-    }
+//    @Test
+//    public void testPath() {
+//        is.createFileWithRandomProbability("/Users/Jess/Desktop/HW7-Disease/babytest.txt", "/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
+//        is.loadGraphFromDataSetWithRandomProbs("/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
+//        is.path(1, 3, 0.1);
+//    }
     
     
 }
