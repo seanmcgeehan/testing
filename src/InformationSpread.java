@@ -14,9 +14,6 @@ import java.util.LinkedList;
 
 public class InformationSpread implements IInformationSpread {
     
-    /*
-     * TODO: pass style checker
-     */
     
     Graph graph = new GraphM();
     double numberOfVertices;
@@ -166,12 +163,15 @@ public class InformationSpread implements IInformationSpread {
                     
                     graph.setValue(neighborNode, VISITED);
                     
-                    if(dist[neighborNode] == INFINITY) {
-                        dist[neighborNode] = (float) (dist[s] *1.0 * ( graph.weight(s, neighborNode)*1.0/100));
+                    if (dist[neighborNode] == INFINITY) {
+                        dist[neighborNode] = (float) (dist[s] * 1.0 *
+                                (graph.weight(s, neighborNode) * 1.0 / 100));
                         pred[neighborNode] = s;
                     } else {
-                        if(dist[neighborNode] < (dist[s] * 1.0 * ( graph.weight(s, neighborNode)*1.0/100))) {
-                            dist[neighborNode] = (float) (dist[s]*1.0 * ( graph.weight(s, neighborNode)*1.0/100));  
+                        if (dist[neighborNode] < (dist[s] * 1.0 * (graph.weight(s, neighborNode)
+                                * 1.0 / 100))) {
+                            dist[neighborNode] = (float) (dist[s] * 1.0 *
+                                    (graph.weight(s, neighborNode) * 1.0 / 100));  
                             pred[neighborNode] = s;
                         }
                     }
@@ -181,7 +181,7 @@ public class InformationSpread implements IInformationSpread {
             }            
         }
         
-        if(dist[destination]== INFINITY) {
+        if (dist[destination] == INFINITY) {
             System.out.println("no path exists") ;
             return shortestPath;
         }
@@ -205,8 +205,8 @@ public class InformationSpread implements IInformationSpread {
         double percent = 1;
         int prev = source;
         for (int x : path(source, destination, threshold)) {
-            if(x != source) {
-               percent = percent * getWeight(prev, x);
+            if (x != source) {
+                percent = percent * getWeight(prev, x);
             }
             prev = x;
         }
@@ -361,7 +361,8 @@ public class InformationSpread implements IInformationSpread {
     }
 
     @Override
-    public Collection<Integer> highDegLowCCNodes(int lowBoundDegree, double upBoundCC, double threshold) {
+    public Collection<Integer> highDegLowCCNodes(
+            int lowBoundDegree, double upBoundCC, double threshold) {
         Collection<Integer> ccNodes = new ArrayList<Integer>();
         
         for (int i = 0; i < vertList.size(); i++) {
@@ -374,7 +375,9 @@ public class InformationSpread implements IInformationSpread {
     }
 
     @Override
-    public int spreadLevelsHighDegLowCC(int seed, double threshold, int lowBoundDegree, double upBoundCC, double probThreshold) {
+    public int spreadLevelsHighDegLowCC(
+            int seed, double threshold, int lowBoundDegree,
+            double upBoundCC, double probThreshold) {
         // check if seed is valid (is in the graph) -> -1   
         ArrayList<Integer> vertListSorted = new ArrayList<Integer>();
         vertListSorted = vertList;
