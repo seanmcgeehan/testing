@@ -49,7 +49,7 @@ public interface IInformationSpread {
      * @param id of the node
      * @return the weight
      */
-    double getWeight(int id1, int id2);
+    int getWeight(int id1, int id2);
 
     /** will be using dijsktra's
      * return the shorthest path between two nodes

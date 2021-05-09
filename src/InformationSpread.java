@@ -36,7 +36,7 @@ public class InformationSpread implements IInformationSpread {
             }
             br.close();
             writer.close();
-            System.out.println(linesWritten);
+//            System.out.println(linesWritten);
             return linesWritten;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -73,7 +73,7 @@ public class InformationSpread implements IInformationSpread {
                 int w = Integer.parseInt(wWord);
                 String weight = linePointer.substring(bigIndex + 1);
                 int wgt = Integer.parseInt(weight);
-                
+//                System.out.println(v + "\t" + w + "\t" + wgt);
                 if (v > 0 && w > 0) {
                     graph.addEdge(v, w, wgt);
                     graph.addEdge(w, v, wgt);
@@ -124,12 +124,12 @@ public class InformationSpread implements IInformationSpread {
             }
         }
         
-        System.out.println("neighbors infected: " + temp.length);     
+//        System.out.println("neighbors infected: " + temp.length);     
         return temp;
     }
 
     @Override
-    public double getWeight(int id1, int id2) {
+    public int getWeight(int id1, int id2) {
         return (graph.weight(id1, id2));
     }
 
@@ -153,11 +153,11 @@ public class InformationSpread implements IInformationSpread {
         while (!queue.isEmpty()) {  
             
             int s = queue.remove();
-            System.out.println("infected size starting at " + s + ": " + getNeighbors(s).length);
+//            System.out.println("infected size starting at " + s + ": " + getNeighbors(s).length);
             
             for (int neighborNode : getInfectNeighbors(s, threshold)) {
                 
-                System.out.println(neighborNode + " " + s);
+//                System.out.println(neighborNode + " " + s);
                 
                 if (graph.getValue(neighborNode) != VISITED) {
                     
@@ -182,7 +182,7 @@ public class InformationSpread implements IInformationSpread {
         }
         
         if (dist[destination] == INFINITY) {
-            System.out.println("no path exists") ;
+//            System.out.println("no path exists") ;
             return shortestPath;
         }
         int reverseIndexer = destination;
@@ -196,7 +196,7 @@ public class InformationSpread implements IInformationSpread {
         for (int i : shortestPath) {
             shortestPathReversed.addFirst(i);  
         }
-        System.out.println("path: " + shortestPathReversed);
+//        System.out.println("path: " + shortestPathReversed);
         return shortestPathReversed;
     }
 
