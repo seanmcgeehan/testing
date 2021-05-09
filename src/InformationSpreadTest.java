@@ -8,7 +8,9 @@ import org.junit.Test;
 public class InformationSpreadTest {
         
     InformationSpread is = new InformationSpread();
-//
+    
+//          commented out because then it will create a new file and mess with future
+//          unit test values >:(
 //    @Test
 //    public void testCreateFileWithRandomProbability() {
 //        File file = new File("/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
