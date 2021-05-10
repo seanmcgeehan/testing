@@ -1,5 +1,3 @@
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class InformationSpreadTestCovid {
@@ -49,9 +47,18 @@ public class InformationSpreadTestCovid {
     }
     
     
-    
-    
-    
-    
+    @Test
+    public void testDegrees() {
+        InformationSpread is = new InformationSpread();
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        System.out.println("Node 1 had degree of 67, pre-vaccination. With vaccinations, "
+                + "it is: \t" + is.degree(1, usFullyImmune));
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        System.out.println("Node 50 had degree of 160, pre-vaccination. With vaccinations, "
+                + "it is: \t" + is.degree(50, usFullyImmune));
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        System.out.println("Node 5555 had degree of 246, pre-vaccination. With vaccinations, "
+                + "it is: \t" + is.degree(5555, usFullyImmune));      
+    }    
     
 }

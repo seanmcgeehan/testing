@@ -14,7 +14,6 @@ import java.util.LinkedList;
 
 public class InformationSpread implements IInformationSpread {
     
-    
     Graph graph = new GraphM();
     double numberOfVertices;
     int depth;
@@ -84,7 +83,6 @@ public class InformationSpread implements IInformationSpread {
                         vertList.add(w);
                     }
                 }
-
             }
             br.close();
             return (int) numberOfVertices;
@@ -105,6 +103,10 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int[] getInfectNeighbors(int id, double threshold) {
+        
+        if (threshold < 0 || threshold > 1) {
+            return null;
+        }
         
         int number = 0;
         
@@ -135,6 +137,9 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public Collection<Integer> path(int source, int destination, double threshold) {
+        if (threshold < 0 || threshold > 1) {
+            return null;
+        }
         
         LinkedList<Integer> queue = new LinkedList<Integer>();
         LinkedList<Integer> shortestPath = new LinkedList<>();
@@ -175,7 +180,6 @@ public class InformationSpread implements IInformationSpread {
                             pred[neighborNode] = s;
                         }
                     }
-
                     queue.add(neighborNode);
                 }
             }            
@@ -202,6 +206,10 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public double pathPercent(int source, int destination, double threshold) {
+        if (threshold < 0 || threshold > 1) {
+            return 0;
+        }
+        
         double percent = 1;
         int prev = source;
         for (int x : path(source, destination, threshold)) {
@@ -215,6 +223,10 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int spreadLevels(int seed, double threshold, double probThreshold) {
+        if (probThreshold < 0 || probThreshold > 1) {
+            return 0;
+        }
+        
         ArrayList<Integer> vertListSorted = new ArrayList<Integer>();
         vertListSorted = vertList;
         Collections.sort(vertList, Collections.reverseOrder());
@@ -240,10 +252,7 @@ public class InformationSpread implements IInformationSpread {
             return 0;
         }
                 
-        double numNeeded = numberOfVertices * threshold;
-        // calculate spread levels
-//        System.out.format("num needed: " + numNeeded);
-        
+        double numNeeded = numberOfVertices * threshold;        
         LinkedList<Integer> currentLevelQueue = new LinkedList<Integer>(); 
                 
         currentLevelQueue.add(seed);   
@@ -279,6 +288,10 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public int degree(int n, double threshold) {
+        if (threshold < 0 || threshold > 1) {
+            return 0;
+        }
+        
         // check if seed is valid (is in the graph) -> -1   
         ArrayList<Integer> vertListSorted = new ArrayList<Integer>();
         vertListSorted = vertList;
@@ -296,6 +309,9 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public Collection<Integer> degreeNodes(int d, double threshold) {
+        if (threshold < 0 || threshold > 1) {
+            return null;
+        }
         // steps:
         // 1. for every vertex in graph, if it's degrees == d, add to collection
         ArrayList<Integer> nodesWithDDegree = new ArrayList<Integer>();
@@ -305,12 +321,15 @@ public class InformationSpread implements IInformationSpread {
                 nodesWithDDegree.add(i);
             }
         }
-        
         return nodesWithDDegree;
     }
 
     @Override
     public double clustCoeff(int n, double threshold) {
+        if (threshold < 0 || threshold > 1) {
+            return 0;
+        }
+
      // check if seed is valid (is in the graph) -> -1   
         ArrayList<Integer> vertListSorted = new ArrayList<Integer>();
         vertListSorted = vertList;
@@ -344,6 +363,10 @@ public class InformationSpread implements IInformationSpread {
 
     @Override
     public Collection<Integer> clustCoeffNodes(double low, double high, double threshold) {
+        if (threshold < 0 || threshold > 1) {
+            return null;
+        }
+
         Collection<Integer> clusteredNodes = new ArrayList<Integer>();      
         
         // for each vertex, check it's clustCoeff 
@@ -357,13 +380,16 @@ public class InformationSpread implements IInformationSpread {
             }
         }
         return clusteredNodes;
-
     }
     
 
     @Override
     public Collection<Integer> highDegLowCCNodes(
             int lowBoundDegree, double upBoundCC, double threshold) {
+        if (threshold < 0 || threshold > 1) {
+            return null;
+        }
+
         Collection<Integer> ccNodes = new ArrayList<Integer>();
         
         for (int i = 0; i < vertList.size(); i++) {
@@ -372,13 +398,16 @@ public class InformationSpread implements IInformationSpread {
             }
         }
         return ccNodes;
-
     }
 
     @Override
     public int spreadLevelsHighDegLowCC(
             int seed, double threshold, int lowBoundDegree,
             double upBoundCC, double probThreshold) {
+        if (probThreshold < 0 || probThreshold > 1) {
+            return 0;
+        }
+
         // check if seed is valid (is in the graph) -> -1   
         ArrayList<Integer> vertListSorted = new ArrayList<Integer>();
         vertListSorted = vertList;
@@ -425,5 +454,4 @@ public class InformationSpread implements IInformationSpread {
         }
         return spreadLevels(seed, threshold, probThreshold);
     }
-
 }

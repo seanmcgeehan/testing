@@ -59,6 +59,14 @@ public class InformationSpreadTest {
     }
     
     @Test
+    public void testPathInvalid() {
+        is.loadGraphFromDataSetWithRandomProbs(
+                "babytestoutput.txt");
+        Collection<Integer> path = is.path(1, 4, 2);
+        assertNull(path);       
+    }
+    
+    @Test
     public void testPathPercentSimple() {
         is.loadGraphFromDataSetWithRandomProbs(
                 "babytestoutput.txt");
@@ -75,11 +83,34 @@ public class InformationSpreadTest {
     }
     
     @Test
+    public void testPathPercentInvalid() {
+        is.loadGraphFromDataSetWithRandomProbs(
+                "babytestoutput.txt");
+        double percent = is.pathPercent(1, 3, -2);
+        assertEquals(percent, 0, .001);
+    }
+    
+    @Test
     public void testSpreadLevels() {
         is.loadGraphFromDataSetWithRandomProbs(
                 "babytestoutput.txt");
         int levels = is.spreadLevels(1, .3, .12);
         assertEquals(levels, 2);
+    }
+    
+    @Test
+    public void testSpreadLevelsInvalid() {
+        is.loadGraphFromDataSetWithRandomProbs(
+                "babytestoutput.txt");
+        int levels = is.spreadLevels(1, .3, 2000);
+        assertEquals(levels, 0);
+        int levels2 = is.spreadLevels(-3, .3, .5);
+        assertEquals(levels2, -1);
+        int levels3 = is.spreadLevels(1, 4, .5);
+        assertEquals(levels3, -1);
+        int levels4 = is.spreadLevels(1, 0, .5);
+        assertEquals(levels4, 0);
+
     }
 
     @Test
@@ -125,30 +156,31 @@ public class InformationSpreadTest {
     @Test
     public void testSpreadLevelsHighDegLowCC() {
         is.loadGraphFromDataSetWithRandomProbs(
-                "babytestoutput.txt");
-        assertEquals(is.spreadLevelsHighDegLowCC(-1, .3, 1,.9,.3), -1);
+                "socfb-American75-Output.mtx");
+        int levels = is.spreadLevelsHighDegLowCC(1, .1, 1, .2, .3);
+        assertEquals(levels, 2);
     }
 
     
     // this test takes several minutes to run but confirms given test values from
     // the last HW
     
-//    @Test
-//    public void testSpreadLevelsHighDegLowCCFb() {
-//        InformationSpread is = new InformationSpread();
-//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
-//        assertEquals(is.spreadLevelsHighDegLowCC(1, .25, 90, .25, 0), 3);
-//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
-//        assertEquals(is.spreadLevelsHighDegLowCC(10, .5, 90, .25, 0), 0);
-//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
-//        assertEquals(is.spreadLevelsHighDegLowCC(10, .5, 90, .75, 0), 0);
-//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
-//        assertEquals(is.spreadLevelsHighDegLowCC(100, .3, 100, .25, 0), 4);
-//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
-//        assertEquals(is.spreadLevelsHighDegLowCC(1000, .5, 100, .25, 0), 3);
-//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
-//        assertEquals(is.spreadLevelsHighDegLowCC(1000, .3, 75, .25, 0), 3);
-//    }
+    @Test
+    public void testSpreadLevelsHighDegLowCCFb() {
+        InformationSpread is = new InformationSpread();
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        assertEquals(is.spreadLevelsHighDegLowCC(1, .25, 90, .25, 0), 3);
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        assertEquals(is.spreadLevelsHighDegLowCC(10, .5, 90, .25, 0), 0);
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        assertEquals(is.spreadLevelsHighDegLowCC(10, .5, 90, .75, 0), 0);
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        assertEquals(is.spreadLevelsHighDegLowCC(100, .3, 100, .25, 0), 4);
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        assertEquals(is.spreadLevelsHighDegLowCC(1000, .5, 100, .25, 0), 3);
+        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+        assertEquals(is.spreadLevelsHighDegLowCC(1000, .3, 75, .25, 0), 3);
+    }
     
 }
     
