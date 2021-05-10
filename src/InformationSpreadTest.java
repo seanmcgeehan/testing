@@ -1,38 +1,22 @@
 import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.Collection;
-
 import org.junit.Test;
 
 public class InformationSpreadTest {
         
     InformationSpread is = new InformationSpread();
     
-//          commented out because then it will create a new file and mess with future
-//          unit test values >:(
-//    @Test
-//    public void testCreateFileWithRandomProbability() {
-//        File file = new File("/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
-//        int linesRead = is.createFileWithRandomProbability(
-//                "/Users/Jess/Desktop/HW7-Disease/babytest.txt", 
-//                "/Users/Jess/Desktop/HW7-Disease/babytestoutput.txt");
-//        assertTrue(file.exists());
-//        assertEquals(linesRead, 12);
-//    }
-    
-    
     @Test
   public void testCreateFileWithRandomProbability() {
-      File file = new File("babytestoutput2.txt");
-      int linesRead = is.createFileWithRandomProbability(
+        File file = new File("babytestoutput2.txt");
+        int linesRead = is.createFileWithRandomProbability(
               "babytest.txt", 
               "babytestoutput2.txt");
-      assertTrue(file.exists());
-      assertEquals(linesRead, 12);
-  }
-    
-    
+        assertTrue(file.exists());
+        assertEquals(linesRead, 12);
+    }
+        
     @Test
     public void testLoadGraph() {
         int numberOfNodes = is.loadGraphFromDataSetWithRandomProbs(
@@ -96,69 +80,75 @@ public class InformationSpreadTest {
                 "babytestoutput.txt");
         int levels = is.spreadLevels(1, .3, .12);
         assertEquals(levels, 2);
-        
     }
 
     @Test
     public void testDegree() {
         is.loadGraphFromDataSetWithRandomProbs(
                 "babytestoutput.txt");
-        
         int neighborLen = is.degree(1, .1);
-       assertEquals(neighborLen, 1);
-        
+        assertEquals(neighborLen, 1);
     }
 
     @Test
     public void testDegreeNodes() {
         is.loadGraphFromDataSetWithRandomProbs(
                 "babytestoutput.txt");
-        System.out.println(is.degreeNodes(1, .8).size());
-        int neighborLen = is.degreeNodes(1, .8).size();
-        //assertEquals(neighborLen, 2);
+        int neighborLen = is.degreeNodes(1, .1).size();
+        assertEquals(neighborLen, 4);
     }
 
     @Test
-    public void testClustCoeff() {
-        
+    public void testClustCoeff() {       
         is.loadGraphFromDataSetWithRandomProbs(
                 "babytestoutput.txt");
-        
-       double edgePer = is.clustCoeff(2, .1);
-        //assertEquals(edgePer, 0.1); //assert equals doesnt work with floats
-        
+        double edgePer = is.clustCoeff(2, .1);
+        assertEquals(edgePer, 0.1, .001);      
     }
     
     @Test
     public void testClustCoeffNodes() {
         is.loadGraphFromDataSetWithRandomProbs(
                 "babytestoutput.txt");
-        
         int neighborLen = is.clustCoeffNodes(0,.5, .3).size();
         assertEquals(neighborLen, 8);
-        
     }
     
     @Test
     public void testHighDegLowCCNodes() {
         is.loadGraphFromDataSetWithRandomProbs(
                 "babytestoutput.txt");
-        
         int neighborLen = is.highDegLowCCNodes(1,.5, .5).size();
         assertEquals(neighborLen, 5);
-        
     }
     
     @Test
     public void testSpreadLevelsHighDegLowCC() {
         is.loadGraphFromDataSetWithRandomProbs(
                 "babytestoutput.txt");
-        System.out.println("*"+is.spreadLevelsHighDegLowCC(1, .1, 1, 1 , 1));
-        int levels = is.spreadLevelsHighDegLowCC(1, .3, 1,.9,.3);
-        assertEquals(is.spreadLevelsHighDegLowCC(-1, .3, 1,.9,.3),-1);
-        //assertEquals(levels, 2);
-        
+        assertEquals(is.spreadLevelsHighDegLowCC(-1, .3, 1,.9,.3), -1);
     }
+
+    
+    // this test takes several minutes to run but confirms given test values from
+    // the last HW
+    
+//    @Test
+//    public void testSpreadLevelsHighDegLowCCFb() {
+//        InformationSpread is = new InformationSpread();
+//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+//        assertEquals(is.spreadLevelsHighDegLowCC(1, .25, 90, .25, 0), 3);
+//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+//        assertEquals(is.spreadLevelsHighDegLowCC(10, .5, 90, .25, 0), 0);
+//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+//        assertEquals(is.spreadLevelsHighDegLowCC(10, .5, 90, .75, 0), 0);
+//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+//        assertEquals(is.spreadLevelsHighDegLowCC(100, .3, 100, .25, 0), 4);
+//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+//        assertEquals(is.spreadLevelsHighDegLowCC(1000, .5, 100, .25, 0), 3);
+//        is.loadGraphFromDataSetWithRandomProbs("socfb-American75-Output.mtx");
+//        assertEquals(is.spreadLevelsHighDegLowCC(1000, .3, 75, .25, 0), 3);
+//    }
     
 }
     

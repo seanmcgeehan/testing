@@ -112,7 +112,7 @@ public interface IInformationSpread {
     * @return a collection of nodes with a clustering coefficient
     * within [low, high]
     */
-   Collection<Integer> clustCoeffNodes(double low, double high, double threshold);
+    Collection<Integer> clustCoeffNodes(double low, double high, double threshold);
 
    /**
     * precision: 0.01
@@ -121,7 +121,7 @@ public interface IInformationSpread {
     * @return a collection of nodes with degree >= lowBoundDegree and
     *  clustering coefficient <= upBoundCC
     */
-   Collection<Integer> highDegLowCCNodes(int lowBoundDegree, double upBoundCC, double threshold);
+    Collection<Integer> highDegLowCCNodes(int lowBoundDegree, double upBoundCC, double threshold);
 
    /**
     * Given a specific node id (seed) this method will return the number of
@@ -136,6 +136,7 @@ public interface IInformationSpread {
     * @return the number of spread Levels necessary to reach threshold percent
     *         nodes in the graph
     */
-   int spreadLevelsHighDegLowCC(int seed, double threshold, int lowBoundDegree, double upBoundCC, double probThreshold);
+    int spreadLevelsHighDegLowCC(int seed, double threshold, int lowBoundDegree,
+            double upBoundCC, double probThreshold);
     
 }

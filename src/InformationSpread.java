@@ -30,7 +30,7 @@ public class InformationSpread implements IInformationSpread {
             String linePointer;
             while ((linePointer = br.readLine()) != null) {
                 int randomWeight = 1 + (int)(Math.random() * ((100 - 1) + 1));
-                System.out.println(linePointer + " " + randomWeight);
+//                System.out.println(linePointer + " " + randomWeight);
                 writer.write(linePointer + " " + randomWeight + "\n");
                 linesWritten++;
             }
@@ -359,6 +359,7 @@ public class InformationSpread implements IInformationSpread {
         return clusteredNodes;
 
     }
+    
 
     @Override
     public Collection<Integer> highDegLowCCNodes(
